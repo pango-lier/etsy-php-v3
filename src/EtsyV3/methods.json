@@ -1,0 +1,933 @@
+{
+  "createDraftListing": {
+    "http_method": "post",
+    "content-type": "application/x-www-form-urlencoded",
+    "uri": "/v3/application/shops/{shop_id}/listings",
+    "params": { "shop_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": [],
+    "data": {
+      "quantity": { "type": "integer", "required": true },
+      "title": { "type": "string", "required": true },
+      "description": { "type": "string", "required": true },
+      "price": { "type": "float", "required": true },
+      "who_made": { "type": "string", "required": true },
+      "when_made": { "type": "string", "required": true },
+      "taxonomy_id": { "type": "integer", "required": true },
+      "shipping_profile_id": { "type": "integer", "required": true },
+      "materials": { "type": "array", "required": false },
+      "shop_section_id": { "type": "integer", "required": false },
+      "processing_min": { "type": "integer", "required": false },
+      "processing_max": { "type": "integer", "required": false },
+      "tags": { "type": "array", "required": false },
+      "recipient": { "type": "string", "required": false },
+      "occasion": { "type": "string", "required": false },
+      "styles": { "type": "array", "required": false },
+      "item_weight": { "type": "float", "required": false },
+      "item_length": { "type": "float", "required": false },
+      "item_width": { "type": "float", "required": false },
+      "item_height": { "type": "float", "required": false },
+      "item_weight_unit": { "type": "string", "required": false },
+      "item_dimensions_unit": { "type": "string", "required": false },
+      "is_personalizable": { "type": "boolean", "required": false },
+      "image_ids": { "type": "array", "required": false },
+      "is_supply": { "type": "boolean", "required": false },
+      "is_customizable": { "type": "boolean", "required": false },
+      "is_taxable": { "type": "boolean", "required": false }
+    }
+  },
+  "getListingsByShop": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/listings",
+    "params": { "shop_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": {
+      "state": { "enum": ["active", "inactive"], "default": "active", "required": false, "type": "string" },
+      "limit": { "minimum": 1, "maximum": 100, "default": 25, "required": false, "type": "integer" },
+      "offset": { "minimum": 0, "default": 0, "required": false, "type": "integer" },
+      "sort_on": { "enum": ["created", "price", "updated"], "default": "created", "required": false, "type": "string" },
+      "sort_order": {
+        "enum": ["asc", "ascending", "desc", "descending", "up", "down"],
+        "default": "desc",
+        "required": false,
+        "type": "string"
+      }
+    },
+    "data": []
+  },
+  "deleteListing": {
+    "http_method": "delete",
+    "content-type": null,
+    "uri": "/v3/application/listings/{listing_id}",
+    "params": { "listing_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": [],
+    "data": []
+  },
+  "getListing": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/listings/{listing_id}",
+    "params": { "listing_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": { "includes": { "default": "", "required": false, "type": "array" } },
+    "data": []
+  },
+  "deleteListingFile": {
+    "http_method": "delete",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}/files/{listing_file_id}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_file_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "getListingFile": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}/files/{listing_file_id}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_file_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "getAllListingFiles": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}/files",
+    "params": {
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" },
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "uploadListingFile": {
+    "http_method": "post",
+    "content-type": "multipart/form-data",
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}/files",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": {
+      "listing_file_id": { "type": "integer", "required": false },
+      "file": { "type": "string", "required": false },
+      "name": { "type": "string", "required": false },
+      "rank": { "type": "integer", "required": false }
+    }
+  },
+  "findAllListingsActive": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/listings/active",
+    "params": [],
+    "query": {
+      "limit": { "minimum": 1, "maximum": 100, "default": 25, "required": false, "type": "integer" },
+      "offset": { "minimum": 0, "default": 0, "required": false, "type": "integer" },
+      "keywords": { "required": false, "type": "string" },
+      "sort_on": { "enum": ["created", "price", "updated"], "default": "created", "required": false, "type": "string" },
+      "sort_order": {
+        "enum": ["asc", "ascending", "desc", "descending", "up", "down"],
+        "default": "desc",
+        "required": false,
+        "type": "string"
+      },
+      "min_price": { "required": false, "type": "number" },
+      "max_price": { "required": false, "type": "number" },
+      "taxonomy_id": { "minimum": 1, "required": false, "type": "integer" },
+      "shop_location": { "required": false, "type": "string" }
+    },
+    "data": []
+  },
+  "findAllActiveListingsByShop": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/listings/active",
+    "params": { "shop_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": {
+      "limit": { "minimum": 1, "maximum": 100, "default": 25, "required": false, "type": "integer" },
+      "offset": { "minimum": 0, "default": 0, "required": false, "type": "integer" },
+      "keywords": { "required": false, "type": "string" }
+    },
+    "data": []
+  },
+  "deleteListingImage": {
+    "http_method": "delete",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}/images/{listing_image_id}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_image_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "getListingImage": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}/images/{listing_image_id}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_image_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "getListingImages": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}/images",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "uploadListingImage": {
+    "http_method": "post",
+    "content-type": "multipart/form-data",
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}/images",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": {
+      "image": { "type": "string", "required": false },
+      "listing_image_id": { "type": "integer", "required": false },
+      "rank": { "type": "integer", "required": false },
+      "overwrite": { "type": "boolean", "required": false },
+      "is_watermarked": { "type": "boolean", "required": false }
+    }
+  },
+  "getListingInventory": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/listings/{listing_id}/inventory",
+    "params": { "listing_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": { "includes": { "enum": ["Listing"], "required": false, "type": "string" } },
+    "data": []
+  },
+  "updateListingInventory": {
+    "http_method": "put",
+    "content-type": "application/json",
+    "uri": "/v3/application/listings/{listing_id}/inventory",
+    "params": { "listing_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": [],
+    "data": {
+      "products": { "type": "array", "required": true },
+      "price_on_property": { "type": "array", "required": false },
+      "quantity_on_property": { "type": "array", "required": false },
+      "sku_on_property": { "type": "array", "required": false }
+    }
+  },
+  "getListingProduct": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/listings/{listing_id}/inventory/products/{product_id}",
+    "params": {
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" },
+      "product_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "getListingOffering": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/listings/{listing_id}/products/{product_id}/offerings/{product_offering_id}",
+    "params": {
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" },
+      "product_id": { "minimum": 1, "required": true, "type": "integer" },
+      "product_offering_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "getListingsByListingIds": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/listings/batch",
+    "params": [],
+    "query": {
+      "listing_ids": { "required": true, "type": "array" },
+      "includes": { "default": "", "required": false, "type": "array" }
+    },
+    "data": []
+  },
+  "getFeaturedListingsByShop": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/listings/featured",
+    "params": { "shop_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": {
+      "limit": { "minimum": 1, "maximum": 100, "default": 25, "required": false, "type": "integer" },
+      "offset": { "minimum": 0, "default": 0, "required": false, "type": "integer" }
+    },
+    "data": []
+  },
+  "deleteListingProperty": {
+    "http_method": "delete",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}/properties/{property_id}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" },
+      "property_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "updateListingProperty": {
+    "http_method": "put",
+    "content-type": "application/x-www-form-urlencoded",
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}/properties/{property_id}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" },
+      "property_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": {
+      "value_ids": { "type": "array", "required": true },
+      "values": { "type": "array", "required": true },
+      "scale_id": { "type": "integer", "required": false }
+    }
+  },
+  "getListingProperty": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/listings/{listing_id}/properties/{property_id}",
+    "params": {
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" },
+      "property_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "getListingProperties": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}/properties",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "getShopReceiptTransactionsByListing": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}/transactions",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": {
+      "limit": { "minimum": 1, "maximum": 100, "default": 25, "required": false, "type": "integer" },
+      "offset": { "minimum": 0, "default": 0, "required": false, "type": "integer" }
+    },
+    "data": []
+  },
+  "createListingTranslation": {
+    "http_method": "post",
+    "content-type": "application/x-www-form-urlencoded",
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}/translations/{language}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" },
+      "language": { "required": true, "type": "string" }
+    },
+    "query": [],
+    "data": {
+      "title": { "type": "string", "required": true },
+      "description": { "type": "string", "required": true },
+      "tags": { "type": "array", "required": false }
+    }
+  },
+  "getListingTranslation": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}/translations/{language}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" },
+      "language": { "required": true, "type": "string" }
+    },
+    "query": [],
+    "data": []
+  },
+  "updateListingTranslation": {
+    "http_method": "put",
+    "content-type": "application/x-www-form-urlencoded",
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}/translations/{language}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" },
+      "language": { "required": true, "type": "string" }
+    },
+    "query": [],
+    "data": {
+      "title": { "type": "string", "required": true },
+      "description": { "type": "string", "required": true },
+      "tags": { "type": "array", "required": false }
+    }
+  },
+  "updateListing": {
+    "http_method": "put",
+    "content-type": "application/x-www-form-urlencoded",
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": {
+      "quantity": { "type": "integer", "required": false },
+      "price": { "type": "float", "required": false },
+      "title": { "type": "string", "required": false },
+      "description": { "type": "string", "required": false },
+      "materials": { "type": "array", "required": false },
+      "should_auto_renew": { "type": "boolean", "required": false },
+      "shipping_profile_id": { "type": "integer", "required": false },
+      "shop_section_id": { "type": "integer", "required": false },
+      "item_weight": { "type": "float", "required": false },
+      "item_length": { "type": "float", "required": false },
+      "item_width": { "type": "float", "required": false },
+      "item_height": { "type": "float", "required": false },
+      "item_weight_unit": { "type": "string", "required": false },
+      "item_dimensions_unit": { "type": "string", "required": false },
+      "is_taxable": { "type": "boolean", "required": false },
+      "taxonomy_id": { "type": "integer", "required": false },
+      "tags": { "type": "array", "required": false },
+      "who_made": { "type": "string", "required": false },
+      "when_made": { "type": "string", "required": false },
+      "featured_rank": { "type": "integer", "required": false },
+      "is_personalizable": { "type": "boolean", "required": false },
+      "state": { "type": "string", "required": false },
+      "is_supply": { "type": "boolean", "required": false },
+      "type": { "type": "string", "required": false },
+      "channels": { "type": "array", "required": false }
+    }
+  },
+  "getListingVariationImages": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}/variation-images",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "updateVariationImages": {
+    "http_method": "post",
+    "content-type": "application/json",
+    "uri": "/v3/application/shops/{shop_id}/listings/{listing_id}/variation-images",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "listing_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": { "variation_images": { "type": "array", "required": true } }
+  },
+  "getShopPaymentAccountLedgerEntries": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/payment-account/ledger-entries",
+    "params": { "shop_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": {
+      "min_created": { "minimum": 946684800, "required": true, "type": "integer" },
+      "max_created": { "minimum": 946684800, "required": true, "type": "integer" },
+      "limit": { "minimum": 1, "maximum": 100, "default": 25, "required": false, "type": "integer" },
+      "offset": { "minimum": 0, "default": 0, "required": false, "type": "integer" }
+    },
+    "data": []
+  },
+  "getPaymentAccountLedgerEntryPayments": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/payment-account/ledger-entries/payments",
+    "params": { "shop_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": { "ledger_entry_ids": { "required": true, "type": "array" } },
+    "data": []
+  },
+  "getShopPaymentByReceiptId": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/receipts/{receipt_id}/payments",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "receipt_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "getPayments": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/payments",
+    "params": { "shop_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": { "payment_ids": { "required": true, "type": "array" } },
+    "data": []
+  },
+  "ping": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/openapi-ping",
+    "params": [],
+    "query": [],
+    "data": []
+  },
+  "getShopReceipt": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/receipts/{receipt_id}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "receipt_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "getShopReceipts": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/receipts",
+    "params": { "shop_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": {
+      "min_created": { "minimum": 946684800, "required": false, "type": "integer" },
+      "max_created": { "minimum": 946684800, "required": false, "type": "integer" },
+      "min_last_modified": { "minimum": 946684800, "required": false, "type": "integer" },
+      "max_last_modified": { "minimum": 946684800, "required": false, "type": "integer" },
+      "limit": { "minimum": 1, "maximum": 100, "default": 25, "required": false, "type": "integer" },
+      "offset": { "minimum": 0, "default": 0, "required": false, "type": "integer" },
+      "was_paid": { "required": false, "type": "boolean" },
+      "was_shipped": { "required": false, "type": "boolean" }
+    },
+    "data": []
+  },
+  "getListingsByShopReceipt": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/receipts/{receipt_id}/listings",
+    "params": {
+      "receipt_id": { "minimum": 1, "required": true, "type": "integer" },
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": {
+      "limit": { "minimum": 1, "maximum": 100, "default": 25, "required": false, "type": "integer" },
+      "offset": { "minimum": 0, "default": 0, "required": false, "type": "integer" }
+    },
+    "data": []
+  },
+  "createReceiptShipment": {
+    "http_method": "post",
+    "content-type": "application/x-www-form-urlencoded",
+    "uri": "/v3/application/shops/{shop_id}/receipts/{receipt_id}/tracking",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "receipt_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": {
+      "tracking_code": { "type": "string", "required": false },
+      "carrier_name": { "type": "string", "required": false },
+      "send_bcc": { "type": "boolean", "required": false }
+    }
+  },
+  "getShopReceiptTransactionsByReceipt": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/receipts/{receipt_id}/transactions",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "receipt_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "getReviewsByShop": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/reviews",
+    "params": { "shop_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": {
+      "limit": { "minimum": 1, "maximum": 100, "default": 25, "required": false, "type": "integer" },
+      "offset": { "minimum": 0, "default": 0, "required": false, "type": "integer" }
+    },
+    "data": []
+  },
+  "getSellerTaxonomyNodes": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/seller-taxonomy/nodes",
+    "params": [],
+    "query": [],
+    "data": []
+  },
+  "getPropertiesByTaxonomyId": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/seller-taxonomy/nodes/{taxonomy_id}/properties",
+    "params": { "taxonomy_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": [],
+    "data": []
+  },
+  "getShippingCarriers": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shipping-carriers",
+    "params": [],
+    "query": { "origin_country_iso": { "required": true, "type": "string" } },
+    "data": []
+  },
+  "getShop": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}",
+    "params": { "shop_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": [],
+    "data": []
+  },
+  "updateShop": {
+    "http_method": "put",
+    "content-type": "application/x-www-form-urlencoded",
+    "uri": "/v3/application/shops/{shop_id}",
+    "params": { "shop_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": [],
+    "data": {
+      "title": { "type": "string", "required": false },
+      "announcement": { "type": "string", "required": false },
+      "sale_message": { "type": "string", "required": false },
+      "digital_sale_message": { "type": "string", "required": false }
+    }
+  },
+  "getShopByOwnerUserId": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/users/{user_id}/shops",
+    "params": { "user_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": [],
+    "data": []
+  },
+  "findShops": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops",
+    "params": [],
+    "query": {
+      "shop_name": { "required": true, "type": "string" },
+      "limit": { "minimum": 1, "maximum": 100, "default": 25, "required": false, "type": "integer" },
+      "offset": { "minimum": 0, "default": 0, "required": false, "type": "integer" }
+    },
+    "data": []
+  },
+  "createShopSection": {
+    "http_method": "post",
+    "content-type": "application/x-www-form-urlencoded",
+    "uri": "/v3/application/shops/{shop_id}/sections",
+    "params": { "shop_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": [],
+    "data": { "title": { "type": "string", "required": true } }
+  },
+  "getShopSections": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/sections",
+    "params": { "shop_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": [],
+    "data": []
+  },
+  "getShopSection": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/sections/{shop_section_id}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "shop_section_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "getListingsByShopSectionId": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/shop-sections/listings",
+    "params": { "shop_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": {
+      "shop_section_ids": { "required": true, "type": "array" },
+      "limit": { "minimum": 1, "maximum": 100, "default": 25, "required": false, "type": "integer" },
+      "offset": { "minimum": 0, "default": 0, "required": false, "type": "integer" },
+      "sort_on": { "enum": ["created", "price", "updated"], "default": "created", "required": false, "type": "string" },
+      "sort_order": {
+        "enum": ["asc", "ascending", "desc", "descending", "up", "down"],
+        "default": "desc",
+        "required": false,
+        "type": "string"
+      }
+    },
+    "data": []
+  },
+  "createShopShippingProfile": {
+    "http_method": "post",
+    "content-type": "application/x-www-form-urlencoded",
+    "uri": "/v3/application/shops/{shop_id}/shipping-profiles",
+    "params": { "shop_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": [],
+    "data": {
+      "title": { "type": "string", "required": true },
+      "origin_country_iso": { "type": "string", "required": true },
+      "primary_cost": { "type": "float", "required": true },
+      "secondary_cost": { "type": "float", "required": true },
+      "min_processing_time": { "type": "integer", "required": true },
+      "max_processing_time": { "type": "integer", "required": true },
+      "processing_time_unit": { "type": "string", "required": false },
+      "destination_country_iso": { "type": "string", "required": false },
+      "destination_region": { "type": "string", "required": false },
+      "origin_postal_code": { "type": "string", "required": false },
+      "shipping_carrier_id": { "type": "integer", "required": false },
+      "mail_class": { "type": "string", "required": false },
+      "min_delivery_days": { "type": "integer", "required": false },
+      "max_delivery_days": { "type": "integer", "required": false }
+    }
+  },
+  "getShopShippingProfiles": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/shipping-profiles",
+    "params": { "shop_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": [],
+    "data": []
+  },
+  "deleteShopShippingProfile": {
+    "http_method": "delete",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/shipping-profiles/{shipping_profile_id}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "shipping_profile_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "getShopShippingProfile": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/shipping-profiles/{shipping_profile_id}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "shipping_profile_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "updateShopShippingProfile": {
+    "http_method": "put",
+    "content-type": "application/x-www-form-urlencoded",
+    "uri": "/v3/application/shops/{shop_id}/shipping-profiles/{shipping_profile_id}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "shipping_profile_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": {
+      "title": { "type": "string", "required": false },
+      "origin_country_iso": { "type": "string", "required": false },
+      "min_processing_time": { "type": "integer", "required": false },
+      "max_processing_time": { "type": "integer", "required": false },
+      "processing_time_unit": { "type": "string", "required": false },
+      "origin_postal_code": { "type": "string", "required": false }
+    }
+  },
+  "createShopShippingProfileDestination": {
+    "http_method": "post",
+    "content-type": "application/x-www-form-urlencoded",
+    "uri": "/v3/application/shops/{shop_id}/shipping-profiles/{shipping_profile_id}/destinations",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "shipping_profile_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": {
+      "primary_cost": { "type": "float", "required": true },
+      "secondary_cost": { "type": "float", "required": true },
+      "destination_country_iso": { "type": "string", "required": false },
+      "destination_region": { "type": "string", "required": false },
+      "shipping_carrier_id": { "type": "integer", "required": false },
+      "mail_class": { "type": "string", "required": false },
+      "min_delivery_days": { "type": "integer", "required": false },
+      "max_delivery_days": { "type": "integer", "required": false }
+    }
+  },
+  "getShopShippingProfileDestinationsByShippingProfile": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/shipping-profiles/{shipping_profile_id}/destinations",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "shipping_profile_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": {
+      "limit": { "minimum": 1, "maximum": 100, "default": 25, "required": false, "type": "integer" },
+      "offset": { "minimum": 0, "default": 0, "required": false, "type": "integer" }
+    },
+    "data": []
+  },
+  "deleteShopShippingProfileDestination": {
+    "http_method": "delete",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/shipping-profiles/{shipping_profile_id}/destinations/{shipping_profile_destination_id}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "shipping_profile_id": { "minimum": 1, "required": true, "type": "integer" },
+      "shipping_profile_destination_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "updateShopShippingProfileDestination": {
+    "http_method": "put",
+    "content-type": "application/x-www-form-urlencoded",
+    "uri": "/v3/application/shops/{shop_id}/shipping-profiles/{shipping_profile_id}/destinations/{shipping_profile_destination_id}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "shipping_profile_id": { "minimum": 1, "required": true, "type": "integer" },
+      "shipping_profile_destination_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": {
+      "primary_cost": { "type": "float", "required": false },
+      "secondary_cost": { "type": "float", "required": false },
+      "destination_country_iso": { "type": "string", "required": false },
+      "destination_region": { "type": "string", "required": false },
+      "shipping_carrier_id": { "type": "integer", "required": false },
+      "mail_class": { "type": "string", "required": false },
+      "min_delivery_days": { "type": "integer", "required": false },
+      "max_delivery_days": { "type": "integer", "required": false }
+    }
+  },
+  "createShopShippingProfileUpgrade": {
+    "http_method": "post",
+    "content-type": "application/x-www-form-urlencoded",
+    "uri": "/v3/application/shops/{shop_id}/shipping-profiles/{shipping_profile_id}/upgrades",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "shipping_profile_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": {
+      "type": { "type": "string", "required": true },
+      "upgrade_name": { "type": "string", "required": true },
+      "price": { "type": "float", "required": true },
+      "secondary_price": { "type": "float", "required": true },
+      "shipping_carrier_id": { "type": "integer", "required": false },
+      "mail_class": { "type": "string", "required": false },
+      "min_delivery_days": { "type": "integer", "required": false },
+      "max_delivery_days": { "type": "integer", "required": false }
+    }
+  },
+  "getShopShippingProfileUpgrades": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/shipping-profiles/{shipping_profile_id}/upgrades",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "shipping_profile_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "deleteShopShippingProfileUpgrade": {
+    "http_method": "delete",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/shipping-profiles/{shipping_profile_id}/upgrades/{upgrade_id}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "shipping_profile_id": { "minimum": 1, "required": true, "type": "integer" },
+      "upgrade_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "updateShopShippingProfileUpgrade": {
+    "http_method": "put",
+    "content-type": "application/x-www-form-urlencoded",
+    "uri": "/v3/application/shops/{shop_id}/shipping-profiles/{shipping_profile_id}/upgrades/{upgrade_id}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "shipping_profile_id": { "minimum": 1, "required": true, "type": "integer" },
+      "upgrade_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": {
+      "upgrade_name": { "type": "string", "required": false },
+      "type": { "type": "string", "required": false },
+      "price": { "type": "float", "required": false },
+      "secondary_price": { "type": "float", "required": false },
+      "shipping_carrier_id": { "type": "integer", "required": false },
+      "mail_class": { "type": "string", "required": false },
+      "min_delivery_days": { "type": "integer", "required": false },
+      "max_delivery_days": { "type": "integer", "required": false }
+    }
+  },
+  "getShopReceiptTransaction": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/transactions/{transaction_id}",
+    "params": {
+      "shop_id": { "minimum": 1, "required": true, "type": "integer" },
+      "transaction_id": { "minimum": 1, "required": true, "type": "integer" }
+    },
+    "query": [],
+    "data": []
+  },
+  "getShopReceiptTransactionsByShop": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/shops/{shop_id}/transactions",
+    "params": { "shop_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": {
+      "limit": { "minimum": 1, "maximum": 100, "default": 25, "required": false, "type": "integer" },
+      "offset": { "minimum": 0, "default": 0, "required": false, "type": "integer" }
+    },
+    "data": []
+  },
+  "getUserAddress": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/user/addresses/{user_address_id}",
+    "params": { "user_address_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": [],
+    "data": []
+  },
+  "getUserAddresses": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/user/addresses",
+    "params": [],
+    "query": {
+      "limit": { "minimum": 1, "maximum": 100, "default": 25, "required": false, "type": "integer" },
+      "offset": { "minimum": 0, "default": 0, "required": false, "type": "integer" }
+    },
+    "data": []
+  },
+  "getUser": {
+    "http_method": "get",
+    "content-type": null,
+    "uri": "/v3/application/users/{user_id}",
+    "params": { "user_id": { "minimum": 1, "required": true, "type": "integer" } },
+    "query": [],
+    "data": []
+  }
+}

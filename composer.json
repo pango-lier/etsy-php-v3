@@ -1,0 +1,19 @@
+{
+    "name": "pango-lier/etsy-php-v3",
+    "description": "Simple PHP Laravel  Etsy-API-V3--Guzzel",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "binhtrong",
+            "email": "binhtrongcdt1@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "EtsyV3\\": "src/EtsyV3/"
+        }
+    }
+}
