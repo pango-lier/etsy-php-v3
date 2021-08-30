@@ -1,34 +1,54 @@
 <?php
 
-namespace App\Library\EtsyApi\Src;
-
-use Log;
+namespace App\Package\EtsyPhpV3\src\EtsyV3;
 
 class EtsyApi
 {
-    /** @var array $methods */
+    /** @var array */
     private $methods = [];
     private $client;
 
     /**
      * EtsyApi constructor.
-     * @param Etsy $server
+     *
+     * @param Etsy             $server
      * @param TokenCredentials $tokenCredentials
+     * @param mixed            $client
      */
     public function __construct($client)
     {
-
         $methods_file = dirname(realpath(__FILE__)) . '/methods.json';
         $this->methods = json_decode(file_get_contents($methods_file), true);
         $this->client = $client;
     }
+
+    public function __call($method, $args)
+    {
+        if (isset($this->methods[$method])) {
+            return call_user_func_array([$this, 'request'], [
+                [
+                    'method' => $method,
+                    'args' => [
+                        'data' => @$args[0]['data'],
+                        'params' => @$args[0]['params'],
+                        //'query' => @$args[0]['query'],
+                        'associations' => @$args[0]['associations'],
+                        'fields' => @$args[0]['fields'],
+                    ],
+                ],
+            ]);
+        }
+
+        throw new \Exception('Method "' . $method . '" not exists');
+    }
+
     // create miniMethod.json from Etsy method.json
     private function request($arguments)
     {
         $method = $this->methods[$arguments['method']];
         $args = $arguments['args'];
         $uri = preg_replace_callback('@{(.+?)}(\/|$)@', function ($matches) use ($args) {
-            return $args["params"][$matches[1]] . $matches[2];
+            return $args['params'][$matches[1]] . $matches[2];
         }, $method['uri']);
 
         $query = $this->prepareQueries($method['params'], $method['query'], $args['params']);
@@ -41,32 +61,11 @@ class EtsyApi
             $query['fields'] = $this->prepareFields($args['fields']);
         }
 
-
         if (!empty($query)) {
-            $uri .= "?" . http_build_query($query);
+            $uri .= '?' . http_build_query($query);
         }
 
         return $this->client->request($method['http_method'], $uri, $args['data'], $method['content-type']);
-    }
-
-    public function __call($method, $args)
-    {
-        if (isset($this->methods[$method])) {
-            return call_user_func_array(array($this, 'request'), array(
-                array(
-                    'method' => $method,
-                    'args' => array(
-                        'data' => @$args[0]['data'],
-                        'params' => @$args[0]['params'],
-                        //'query' => @$args[0]['query'],
-                        'associations' => @$args[0]['associations'],
-                        'fields' => @$args[0]['fields']
-                    )
-                )
-            ));
-        } else {
-            throw new \Exception('Method "' . $method . '" not exists');
-        }
     }
 
     private function prepareQueries($mParams, $queries, $params)
@@ -75,16 +74,17 @@ class EtsyApi
         foreach ($params as $key => $param) {
             if (isset($queries[$key])) {
                 $result[$key] = $param;
-            } else if (!isset($mParams[$key])) {
+            } elseif (!isset($mParams[$key])) {
                 throw new \Exception($key . ' is invalid .', 400);
             }
         }
+
         return $result;
     }
 
     private function prepareAssociations($associations)
     {
-        $includes = array();
+        $includes = [];
         foreach ($associations as $key => $value) {
             if (is_array($value)) {
                 $includes[] = $this->buildAssociation($key, $value);
@@ -98,7 +98,6 @@ class EtsyApi
 
     private function prepareFields($fields)
     {
-
         return implode(',', $fields);
     }
 
@@ -106,7 +105,7 @@ class EtsyApi
     {
         $association = $assoc;
         if (isset($conf['select'])) {
-            $association .= "(" . implode(',', $conf['select']) . ")";
+            $association .= '(' . implode(',', $conf['select']) . ')';
         }
         if (isset($conf['scope'])) {
             $association .= ':' . $conf['scope'];
