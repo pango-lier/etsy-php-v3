@@ -19,10 +19,10 @@ class EtsyOauth
      * @param null|mixed    $access_token
      * @param null|mixed    $refresh_token
      */
-    public function __construct($accountId = null, $access_token = null, $refresh_token = null)
+    public function __construct($accountId, $clientId, $scope = ETSY_SCOPE, $baseUrl = 'https://api.etsy.com')
     {
         $this->accountId = $accountId;
-        $this->client = new EtsyClient(env('ETSY_KEYSTRING'), ETSY_SCOPE);
+        $this->client = new EtsyClient($clientId, $scope, $baseUrl);
     }
 
     public function getApi()
@@ -94,7 +94,3 @@ class EtsyOauth
         ]);
     }
 }
-/*
-'access_token' => '340549007.xprxmzICsLSqq8IIb-lh1p1omVse4UX8mYJPXR2s-1Ly3O-R5a-4FPeDfgwP49gBwm_qmTyokdSLtpp5NdlcdLtEBAa',
-            'refresh_token' => '340549007.2C72k6bgd35plIh8Ciqw58PsflCGngZSXF_lqcFsi6iBtp92MLBAdQWn-4pqfik2b_r0Tu4q2Snz7C5dHviv7Yepa3',
- */
