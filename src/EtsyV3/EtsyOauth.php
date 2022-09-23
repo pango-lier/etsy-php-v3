@@ -2,7 +2,6 @@
 
 namespace App\Package\EtsyPhpV3\src\EtsyV3;
 
-use App\Account;
 use Redis;
 use Str;
 
@@ -20,10 +19,10 @@ class EtsyOauth
      * @param null|mixed    $access_token
      * @param null|mixed    $refresh_token
      */
-    public function __construct($accountId = null, $access_token = null, $refresh_token = null)
+    public function __construct($accountId, $clientId, $scope = ETSY_SCOPE, $baseUrl = 'https://api.etsy.com')
     {
         $this->accountId = $accountId;
-        $this->client = new EtsyClient(env('ETSY_KEYSTRING'), ETSY_SCOPE);
+        $this->client = new EtsyClient($clientId, $scope, $baseUrl);
     }
 
     public function getApi()
@@ -44,21 +43,23 @@ class EtsyOauth
         $codeVerifier = strtolower(Str::random(128));
         Redis::hset('state_oauth2', $state, 1);
         Redis::hset('code_verifier_oauth2', $state, $codeVerifier);
-       return $this->client->getUrlRedirect($redirectUri, $codeVerifier, $state);
+        return $this->client->getUrlRedirect($redirectUri, $codeVerifier, $state);
     }
 
-// Step 2: Grant Access#
-//Step 3: Request an Access Token
+    // Step 2: Grant Access#
+    //Step 3: Request an Access Token
     public function getAccessToken($state, $code, $redirectUri)
     {
         if ((!Redis::hexists('state_oauth2', $state)) && (!Redis::hexists('code_verifier_oauth2', $state))) {
-            throw new \Exception('State not match', 1);
+            throw new \Exception('State not match', 400);
         }
         $codeVerifier = Redis::hget('code_verifier_oauth2', $state);
         Redis::hdel('state_oauth2', $state);
         Redis::hdel('code_verifier_oauth2', $state);
 
-        return $this->client->getAccessToken($redirectUri, $codeVerifier, $code);
+        $token= $this->client->getAccessToken($redirectUri, $codeVerifier, $code);
+        $this->setRedisToken($this->accountId, $this->client->access_token, $this->client->refresh_token);
+        return $token;
     }
 
     public function getRateLimitRemaining()
@@ -69,16 +70,8 @@ class EtsyOauth
     private function setAutoResetToken()
     {
         if (!Redis::hexists('token_oauth2', $this->accountId)) {
-            $account = Account::where('id', $this->accountId)->firstOrFail();
-            Redis::hmset('token_oauth2', $this->accountId, [
-                'id' => $this->accountId,
-                'access_token' => $account->access_token,
-                'refresh_token' => $account->refresh_token,
-                'updated_at_token' => now(),
-            ]);
-            $this->setRedisToken($this->accountId, $account->access_token, $account->refresh_token);
-            $this->client->access_token = $account->access_token;
-            $this->client->refresh_token = $account->refresh_token;
+            $this->client->refreshToken(); //access_token and refresh_token was set
+            $this->setRedisToken($this->accountId, $this->client->access_token, $this->client->refresh_token);
         } else {
             $token = Redis::hget('token_oauth2', $this->accountId);
             if (now() - $token['updated_at_token'] > 3400) {
@@ -101,7 +94,3 @@ class EtsyOauth
         ]);
     }
 }
-/*
-'access_token' => '340549007.xprxmzICsLSqq8IIb-lh1p1omVse4UX8mYJPXR2s-1Ly3O-R5a-4FPeDfgwP49gBwm_qmTyokdSLtpp5NdlcdLtEBAa',
-            'refresh_token' => '340549007.2C72k6bgd35plIh8Ciqw58PsflCGngZSXF_lqcFsi6iBtp92MLBAdQWn-4pqfik2b_r0Tu4q2Snz7C5dHviv7Yepa3',
- */
