@@ -32,6 +32,7 @@ $getUrlRedirect= (new EtsyOauth())->getUrlRedirect(route('callback.verifier'));
 ```
 $token = (new EtsyOauth())->getAccessToken($request->state, $request->code, route('callback.verifier'));
 ```
+Token will be saved in Redis.
 
 # EtsyApi.php
 
