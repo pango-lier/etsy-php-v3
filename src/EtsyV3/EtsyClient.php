@@ -32,17 +32,20 @@ class EtsyClient
     public $enable_reset_token_invalid = true;
     public $new_token_created;
 
-    public function __construct($clientId, $scope = null, $access_token = null, $refresh_token = null)
-    {
+    public function __construct(
+        $clientId,
+        $scope = "address_r address_w billing_r cart_r cart_w email_r favorites_r favorites_w feedback_r listings_d listings_r listings_w profile_r profile_w recommend_r recommend_w shops_r shops_w transactions_r transactions_w",
+        $baseUrl = 'https://api.etsy.com'
+    ) {
         $this->clientId = $clientId;
         $this->scope = $scope;
         $this->guzzleClient = new Client([
-            'base_uri' => 'https://api.etsy.com',
+            'base_uri' => $baseUrl,
         ]);
     }
 
     // Step 1: Authorization Code
-    public function getUrlRedirect($redirectUri,$codeVerifier,$state)
+    public function getUrlRedirect($redirectUri, $codeVerifier, $state)
     {
         $codeChallenge = strtr(rtrim(
             base64_encode(hash('sha256', $codeVerifier, true)),
@@ -63,7 +66,7 @@ class EtsyClient
     }
 
     // Step 2: Grant Access#
-    public function getAccessToken($redirectUri,$codeVerifier, $code)
+    public function getAccessToken($redirectUri, $codeVerifier, $code)
     {
         // Step 3: Get Access Token
         try {
@@ -201,6 +204,6 @@ class EtsyRequestException extends \Exception
         $this->jsonError = $e->getResponse()->getBody()->getContents();
         $error = json_decode((string) $this->jsonError);
         $errorMessage = ($error->error ?? '') . ' :' . ($error->error_description ?? '');
-        parent::__construct($errorMessage, 1, $e);
+        parent::__construct($errorMessage, 400, $e);
     }
 }
